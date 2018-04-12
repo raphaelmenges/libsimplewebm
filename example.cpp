@@ -29,6 +29,7 @@
 #include "bitmap/bitmap_image.hpp"
 
 #include "mkvparser/mkvparser.h"
+#include "libsimplewebm.h"
 
 #include <iostream>
 #include <sstream>
@@ -98,6 +99,8 @@ int main()
 
 		// Print information about length
 		std::cout << "Length: " << demuxer.getLength() << std::endl;
+
+		std::cout << simplewebm::return_the_answer() << std::endl;
 
 		// Go over frames
 		int frameNumber = 0;

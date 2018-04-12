@@ -24,15 +24,20 @@ include_directories(${CMAKE_SOURCE_DIR}/libwebm)
 
 # Get sources
 set(SOURCES
-	example.cpp
+	libsimplewebm.h
+	libsimplewebm.cpp
 	WebMDemuxer.cpp
 	VPXDecoder.cpp
 	OpusVorbisDecoder.cpp
 	libwebm/mkvparser/mkvparser.cc)
 
-# Create executable
-add_executable(libsimplewebm ${SOURCES})
+# Create library
+add_library(libsimplewebm STATIC ${SOURCES})
 
 # Link libraries into executable
 target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES})
 target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES})
+
+# Create example
+add_executable(example example.cpp)
+target_link_libraries(example libsimplewebm)
