@@ -1,11 +1,26 @@
 cmake_minimum_required(VERSION 2.8)
 
 # Set project name
-project(simplewebm)
+project(libsimplewebm)
 
-# Libvpx TODO: link according to generator
-set(VPX_LIBRARIES ${CMAKE_SOURCE_DIR}/libvpx/lib/MSVC2015/vpxmdd.lib)
-include_directories(libvpx/include)
+# libvpx
+set(VPX_DIR ${CMAKE_SOURCE_DIR}/libvpx)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+
+  if(${MSVC_VERSION} STREQUAL 1900) # MSVC2015
+	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmd.lib)
+	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
+  else() # MSVC2017
+	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2017/vpxmd.lib)
+	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
+  endif()
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx.a)
+	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx_g.a)
+endif()
+include_directories(${VPX_DIR}/include)
+
+include_directories(${CMAKE_SOURCE_DIR}/libwebm)
 
 # Get sources
 set(SOURCES
@@ -15,11 +30,9 @@ set(SOURCES
 	OpusVorbisDecoder.cpp
 	libwebm/mkvparser/mkvparser.cc)
 
-# Include paths
-include_directories(libwebm)
-
 # Create executable
-add_executable(simplewebm ${SOURCES})
+add_executable(libsimplewebm ${SOURCES})
 
 # Link libraries into executable
-target_link_libraries(simplewebm ${VPX_LIBRARIES})
+target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES})
+target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES})
