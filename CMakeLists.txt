@@ -8,6 +8,15 @@ if(NOT MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 endif(NOT MSVC)
 
+# Final libraries, linked in the end
+set(FINAL_LIBRARIES "")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	list(APPEND FINAL_LIBRARIES pthread)
+	# list(APPEND FINAL_LIBRARIES dl)
+endif()	
+
+
 # libvpx
 set(VPX_DIR ${CMAKE_SOURCE_DIR}/libvpx)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
@@ -40,8 +49,8 @@ set(SOURCES
 add_library(libsimplewebm STATIC ${SOURCES})
 
 # Link libraries into executable
-target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES})
-target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES})
+target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES} ${FINAL_LIBRARIES})
+target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES} ${FINAL_LIBRARIES})
 
 # Create example
 add_executable(example example.cpp)
