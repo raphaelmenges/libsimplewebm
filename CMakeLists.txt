@@ -16,7 +16,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	# list(APPEND FINAL_LIBRARIES dl)
 endif()	
 
-
 # libvpx
 set(VPX_DIR ${CMAKE_SOURCE_DIR}/libvpx)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
@@ -53,5 +52,5 @@ target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES} ${FINAL_L
 target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES} ${FINAL_LIBRARIES})
 
 # Create example
-add_executable(example example.cpp)
-target_link_libraries(example libsimplewebm)
+# add_executable(example example.cpp)
+# target_link_libraries(example libsimplewebm)
