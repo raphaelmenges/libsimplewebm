@@ -22,7 +22,20 @@
 *    SOFTWARE.
 */
 
+#include <vector>
+#include <memory>
+
 namespace simplewebm
 {
-	int return_the_answer();
+	// Simple image class to hold data of one frame from movie
+	class Image
+	{
+	public:
+		int width;
+		int height;
+		std::vector<char> data; // RGB pixels
+	};
+
+	// Extract all frames of a movie
+	std::unique_ptr<std::vector<Image> > extract_frames(std::string webm_filepath);
 }
