@@ -3,11 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 # Set project name
 project(simplewebm)
 
-# Get dependencies
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(VPX REQUIRED vpx) # ${VPX_LIBRARIES}
-pkg_check_modules(OPUS REQUIRED opus) # ${OPUS_LIBRARIES}
-pkg_check_modules(VORBIS REQUIRED vorbis) # ${VORBIS_LIBRARIES}
+# Libvpx TODO: link according to generator
+set(VPX_LIBRARIES ${CMAKE_SOURCE_DIR}/libvpx/lib/MSVC2015/vpxmdd.lib)
+include_directories(libvpx/include)
 
 # Get sources
 set(SOURCES
@@ -24,4 +22,4 @@ include_directories(libwebm)
 add_executable(simplewebm ${SOURCES})
 
 # Link libraries into executable
-target_link_libraries(simplewebm ${VPX_LIBRARIES} ${OPUS_LIBRARIES} ${VORBIS_LIBRARIES})
+target_link_libraries(simplewebm ${VPX_LIBRARIES})

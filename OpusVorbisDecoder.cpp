@@ -1,6 +1,8 @@
 /*
 	MIT License
 
+	Copyright (c) 2018 Raphael Menges
+
 	Copyright (c) 2016 Błażej Szczygieł
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,13 +24,16 @@
 	SOFTWARE.
 */
 
+// Functionality removed as neither vorbis nor opus are linked
+
 #include "OpusVorbisDecoder.hpp"
 
-#include <vorbis/codec.h>
-#include <opus/opus.h>
+// #include <vorbis/codec.h>
+// #include <opus/opus.h>
 
 #include <string.h>
 
+/*
 struct VorbisDecoder
 {
 	vorbis_info info;
@@ -38,6 +43,7 @@ struct VorbisDecoder
 
 	bool hasDSPState, hasBlock;
 };
+*/
 
 /**/
 
@@ -45,6 +51,7 @@ OpusVorbisDecoder::OpusVorbisDecoder(const WebMDemuxer &demuxer) :
 	m_vorbis(NULL), m_opus(NULL),
 	m_numSamples(0)
 {
+	/*
 	switch (demuxer.getAudioCodec())
 	{
 		case WebMDemuxer::AUDIO_VORBIS:
@@ -60,6 +67,7 @@ OpusVorbisDecoder::OpusVorbisDecoder(const WebMDemuxer &demuxer) :
 		default:
 			return;
 	}
+	*/
 	close();
 }
 OpusVorbisDecoder::~OpusVorbisDecoder()
@@ -74,6 +82,7 @@ bool OpusVorbisDecoder::isOpen() const
 
 bool OpusVorbisDecoder::getPCMS16(WebMFrame &frame, short *buffer, int &numOutSamples)
 {
+	/*
 	if (m_vorbis)
 	{
 		m_vorbis->op.packet = frame.buffer;
@@ -119,11 +128,13 @@ bool OpusVorbisDecoder::getPCMS16(WebMFrame &frame, short *buffer, int &numOutSa
 			return true;
 		}
 	}
+	*/
 	return false;
 }
 
 bool OpusVorbisDecoder::openVorbis(const WebMDemuxer &demuxer)
 {
+	/*
 	size_t extradataSize = 0;
 	const unsigned char *extradata = demuxer.getAudioExtradata(extradataSize);
 
@@ -133,7 +144,7 @@ bool OpusVorbisDecoder::openVorbis(const WebMDemuxer &demuxer)
 	size_t headerSize[3] = {0};
 	size_t offset = 1;
 
-	/* Calculate three headers sizes */
+	// Calculate three headers sizes
 	for (int i = 0; i < 2; ++i)
 	{
 		for (;;)
@@ -167,7 +178,7 @@ bool OpusVorbisDecoder::openVorbis(const WebMDemuxer &demuxer)
 	m_vorbis->hasDSPState = m_vorbis->hasBlock = false;
 	vorbis_info_init(&m_vorbis->info);
 
-	/* Upload three Vorbis headers into libvorbis */
+	// Upload three Vorbis headers into libvorbis
 	vorbis_comment vc;
 	vorbis_comment_init(&vc);
 	for (int i = 0; i < 3; ++i)
@@ -196,9 +207,13 @@ bool OpusVorbisDecoder::openVorbis(const WebMDemuxer &demuxer)
 	m_numSamples = 4096 / m_channels;
 
 	return true;
+	*/
+	return false;
 }
+
 bool OpusVorbisDecoder::openOpus(const WebMDemuxer &demuxer)
 {
+	/*
 	int opusErr = 0;
 	m_opus = opus_decoder_create(demuxer.getSampleRate(), m_channels, &opusErr);
 	if (!opusErr)
@@ -206,11 +221,13 @@ bool OpusVorbisDecoder::openOpus(const WebMDemuxer &demuxer)
 		m_numSamples = demuxer.getSampleRate() * 0.06 + 0.5; //Maximum frame size (for 60 ms frame)
 		return true;
 	}
+	*/
 	return false;
 }
 
 void OpusVorbisDecoder::close()
 {
+	/*
 	if (m_vorbis)
 	{
 		if (m_vorbis->hasBlock)
@@ -222,4 +239,5 @@ void OpusVorbisDecoder::close()
 	}
 	if (m_opus)
 		opus_decoder_destroy(m_opus);
+	*/
 }
