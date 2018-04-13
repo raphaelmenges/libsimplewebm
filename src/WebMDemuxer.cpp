@@ -1,6 +1,8 @@
 /*
 	MIT License
 
+	Copyright (c) 2018 Raphael Menges
+
 	Copyright (c) 2016 Błażej Szczygieł
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -115,11 +117,11 @@ WebMDemuxer::VIDEO_CODEC WebMDemuxer::getVideoCodec() const
 }
 int WebMDemuxer::getWidth() const
 {
-	return m_videoTrack->GetWidth();
+	return (int)m_videoTrack->GetWidth();
 }
 int WebMDemuxer::getHeight() const
 {
-	return m_videoTrack->GetHeight();
+	return (int)m_videoTrack->GetHeight();
 }
 
 WebMDemuxer::AUDIO_CODEC WebMDemuxer::getAudioCodec() const
@@ -136,11 +138,11 @@ double WebMDemuxer::getSampleRate() const
 }
 int WebMDemuxer::getChannels() const
 {
-	return m_audioTrack->GetChannels();
+	return (int)m_audioTrack->GetChannels();
 }
 int WebMDemuxer::getAudioDepth() const
 {
-	return m_audioTrack->GetBitDepth();
+	return (int)m_audioTrack->GetBitDepth();
 }
 
 bool WebMDemuxer::readFrame(WebMFrame *videoFrame, WebMFrame *audioFrame)
@@ -205,7 +207,7 @@ bool WebMDemuxer::readFrame(WebMFrame *videoFrame, WebMFrame *audioFrame)
 
 	WebMFrame *frame = NULL;
 
-	const long trackNumber = m_block->GetTrackNumber();
+	const long trackNumber = (long)m_block->GetTrackNumber();
 	if (trackNumber == videoTrackNumber)
 		frame = videoFrame;
 	else if (trackNumber == audioTrackNumber)
@@ -236,6 +238,6 @@ bool WebMDemuxer::readFrame(WebMFrame *videoFrame, WebMFrame *audioFrame)
 
 inline bool WebMDemuxer::notSupportedTrackNumber(long videoTrackNumber, long audioTrackNumber) const
 {
-	const long trackNumber = m_block->GetTrackNumber();
+	const long trackNumber = (long)m_block->GetTrackNumber();
 	return (trackNumber != videoTrackNumber && trackNumber != audioTrackNumber);
 }

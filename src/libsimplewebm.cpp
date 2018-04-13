@@ -24,7 +24,7 @@
 *    SOFTWARE.
 */
 
-#include "libsimplewebm.h"
+#include "../libsimplewebm.h"
 #include "VPXDecoder.hpp"
 #include "mkvparser/mkvparser.h"
 #include <sstream>
@@ -80,6 +80,7 @@ namespace simplewebm
 		return std::min(std::max(v, 0), 255);
 	}
 
+	// Implementation
 	std::unique_ptr<std::vector<Image> > extract_frames(std::string webm_filepath)
 	{
 		auto output = std::unique_ptr<std::vector<Image> >(new std::vector<Image>);

@@ -18,9 +18,8 @@ project(libsimplewebm)
 # Final libraries, linked in the end
 set(FINAL_LIBRARIES "")
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 	list(APPEND FINAL_LIBRARIES pthread)
-	# list(APPEND FINAL_LIBRARIES dl)
 endif()	
 
 # libvpx
@@ -40,15 +39,16 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 endif()
 include_directories(${VPX_DIR}/include)
 
+# libwebm
 include_directories(${CMAKE_SOURCE_DIR}/libwebm)
 
-# Get sources
+# Get own sources
 set(SOURCES
 	libsimplewebm.h
-	libsimplewebm.cpp
-	WebMDemuxer.cpp
-	VPXDecoder.cpp
-	OpusVorbisDecoder.cpp
+	src/libsimplewebm.cpp
+	src/WebMDemuxer.cpp
+	src/VPXDecoder.cpp
+	src/OpusVorbisDecoder.cpp
 	libwebm/mkvparser/mkvparser.cc)
 
 # Create library
@@ -59,5 +59,5 @@ target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES} ${FINAL_L
 target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES} ${FINAL_LIBRARIES})
 
 # Create example
-# add_executable(example example.cpp)
-# target_link_libraries(example libsimplewebm)
+add_executable(example example.cpp)
+target_link_libraries(example libsimplewebm)
