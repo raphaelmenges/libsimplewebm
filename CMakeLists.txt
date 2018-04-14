@@ -23,7 +23,7 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 endif()	
 
 # libvpx
-set(VPX_DIR ${CMAKE_SOURCE_DIR}/libvpx)
+set(VPX_DIR ${CMAKE_CURRENT_LIST_DIR}/libvpx)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 
   if(${MSVC_VERSION} STREQUAL 1900) # MSVC2015
@@ -40,7 +40,7 @@ endif()
 include_directories(${VPX_DIR}/include)
 
 # libwebm
-include_directories(${CMAKE_SOURCE_DIR}/libwebm)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/libwebm)
 
 # Get own sources
 set(SOURCES
