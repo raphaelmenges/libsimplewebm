@@ -81,16 +81,14 @@ namespace simplewebm
 	}
 
 	// Implementation
-	std::unique_ptr<std::vector<Image> > extract_frames(std::string webm_filepath)
+	ReturnValue extract_images(const std::string webm_filepath, std::shared_ptr<std::vector<Image> > sp_images, const int thread_count)
 	{
-		auto output = std::unique_ptr<std::vector<Image> >(new std::vector<Image>);
-
 		// Open webm file from harddrive
 		WebMDemuxer demuxer(new MkvReader(webm_filepath.c_str()));
 		if (demuxer.isOpen())
 		{
 			// Separate video material
-			VPXDecoder videoDec(demuxer, 8);
+			VPXDecoder videoDec(demuxer, thread_count);
 
 			// Initialize frame and image from frame
 			WebMFrame videoFrame;
@@ -162,13 +160,13 @@ namespace simplewebm
 							}
 						}
 
-						// Push image into output structure (TODO: move, not copy!)
-						output->push_back(output_image);
+						// Move (!) image into output structure
+						sp_images->emplace_back(std::move(output_image));
 					}
 				}
 			}
+			return ReturnValue::OK;
 		}
-
-		return output;
+		return ReturnValue::ERROR;
 	}
 }

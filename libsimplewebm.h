@@ -27,6 +27,12 @@
 
 namespace simplewebm
 {
+	// Return values
+	enum class ReturnValue {
+		OK,
+		ERROR
+	};
+
 	// Simple image class to hold data of one frame from movie
 	class Image
 	{
@@ -36,6 +42,6 @@ namespace simplewebm
 		std::vector<char> data; // RGB pixels
 	};
 
-	// Extract all frames of a movie
-	std::unique_ptr<std::vector<Image> > extract_frames(std::string webm_filepath);
+	// Add all frames of a movie to shared vector of images (shared vector is *not* cleared)
+	ReturnValue extract_frames(const std::string webm_filepath, std::shared_ptr<std::vector<Image> > sp_images, const int thread_count = 1);
 }
