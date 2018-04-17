@@ -27,21 +27,37 @@
 
 namespace simplewebm
 {
-	// Return values
-	enum class ReturnValue {
-		OK,
-		ERROR
-	};
-
 	// Simple image class to hold data of one frame from movie
 	class Image
 	{
 	public:
-		int width;
-		int height;
+		int width = 0;
+		int height = 0;
 		std::vector<char> data; // RGB pixels
 	};
 
-	// Add all frames of a movie to shared vector of images (shared vector is *not* cleared)
-	ReturnValue extract_images(const std::string webm_filepath, std::shared_ptr<std::vector<Image> > sp_images, const int thread_count = 1);
+	// Image walker to fetch consecutive range of images from video
+	class ImageWalker
+	{
+	public:
+
+		// Destructor
+		virtual ~ImageWalker() = 0;
+
+		// Walk over video, return true when more video frames are available. 
+		virtual bool walk(
+			const unsigned int count_to_extract,
+			std::shared_ptr<std::vector<Image> > sp_images,
+			unsigned int * p_extracted_count = nullptr) = 0;
+
+	protected:
+
+		// Constructor
+		ImageWalker();
+		ImageWalker(const ImageWalker&) = delete;
+		ImageWalker& operator=(ImageWalker const&) = delete;
+	};
+
+	// Factory of image walker
+	std::unique_ptr<ImageWalker> create_image_walker(const std::string webm_filepath, const int thread_count = 1);
 }
