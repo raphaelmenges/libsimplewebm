@@ -238,10 +238,10 @@ namespace simplewebm
 								const char g = clamp8((298 * c - 100 * d - 208 * e + 128) >> 8);
 								const char b = clamp8((298 * c + 516 * d + 128) >> 8);
 
-								// Set pixel value
-								output_image.data.push_back(r);
-								output_image.data.push_back(g);
+								// Set pixel value with BGR format
 								output_image.data.push_back(b);
+								output_image.data.push_back(g);
+								output_image.data.push_back(r);
 							}
 						}
 					}
