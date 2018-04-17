@@ -43,5 +43,5 @@ namespace simplewebm
 	};
 
 	// Add all frames of a movie to shared vector of images (shared vector is *not* cleared)
-	ReturnValue extract_frames(const std::string webm_filepath, std::shared_ptr<std::vector<Image> > sp_images, const int thread_count = 1);
+	ReturnValue extract_images(const std::string webm_filepath, std::shared_ptr<std::vector<Image> > sp_images, const int thread_count = 1);
 }
