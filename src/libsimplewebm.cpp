@@ -24,7 +24,7 @@
 *    SOFTWARE.
 */
 
-#include "../libsimplewebm.h"
+#include "../libsimplewebm.hpp"
 #include "VPXDecoder.hpp"
 #include "mkvparser/mkvparser.h"
 #include <sstream>

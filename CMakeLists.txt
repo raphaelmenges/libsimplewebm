@@ -44,7 +44,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/libwebm)
 
 # Get own sources
 set(SOURCES
-	libsimplewebm.h
+	libsimplewebm.hpp
 	src/libsimplewebm.cpp
 	src/WebMDemuxer.cpp
 	src/VPXDecoder.cpp
