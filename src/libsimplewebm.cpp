@@ -85,26 +85,26 @@ namespace simplewebm
 	}
 
 	/////////////////////////////////////////////////
-	/// ImageWalkerImpl Declaration
+	/// VideoWalkerImpl Declaration
 	/////////////////////////////////////////////////
 
-	// Implementation of image walker class
-	class ImageWalkerImpl : public ImageWalker
+	// Implementation of video walker class
+	class VideoWalkerImpl : public VideoWalker
 	{
 	public:
 
 		// Constructor
-		ImageWalkerImpl(const std::string webm_filepath, const int thread_count);
-		ImageWalkerImpl(const ImageWalker&) = delete;
-		ImageWalkerImpl& operator=(ImageWalker const&) = delete;
+		VideoWalkerImpl(const std::string webm_filepath, const int thread_count);
+		VideoWalkerImpl(const VideoWalker&) = delete;
+		VideoWalkerImpl& operator=(VideoWalker const&) = delete;
 
 		// Destructor
-		virtual ~ImageWalkerImpl();
+		virtual ~VideoWalkerImpl();
 
 		// Walk over video, return true when more video frames are available. 
 		virtual bool walk(
-			const unsigned int count_to_extract,
 			std::shared_ptr<std::vector<Image> > sp_images,
+			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr);
 
 	private:
@@ -117,33 +117,33 @@ namespace simplewebm
 	};
 
 	/////////////////////////////////////////////////
-	/// ImageWalker factory definition
+	/// VideoWalker factory definition
 	/////////////////////////////////////////////////
 
-	// Factory of image walkers
-	std::unique_ptr<ImageWalker> create_image_walker(const std::string webm_filepath, const int thread_count)
+	// Factory of video walkers
+	std::unique_ptr<VideoWalker> create_video_walker(const std::string webm_filepath, const int thread_count)
 	{
-		return std::unique_ptr<ImageWalker>(new ImageWalkerImpl(webm_filepath, thread_count));
+		return std::unique_ptr<VideoWalker>(new VideoWalkerImpl(webm_filepath, thread_count));
 	}
 
 	/////////////////////////////////////////////////
-	/// ImageWalkerImpl Definition
+	/// VideoWalkerImpl Definition
 	/////////////////////////////////////////////////
 
 	// Constructor of base class
-	ImageWalker::ImageWalker()
+	VideoWalker::VideoWalker()
 	{
 		// Do nothing
 	}
 
 	// Destructor of base class
-	ImageWalker::~ImageWalker()
+	VideoWalker::~VideoWalker()
 	{
 		// Do nothing
 	}
 
 	// Constructor
-	ImageWalkerImpl::ImageWalkerImpl(const std::string webm_filepath, const int thread_count) : ImageWalker()
+	VideoWalkerImpl::VideoWalkerImpl(const std::string webm_filepath, const int thread_count) : VideoWalker()
 	{
 		// Create WebMDemuxer while opening video file
 		_up_webm_demuxer = std::unique_ptr<WebMDemuxer>(new WebMDemuxer(new MkvReader(webm_filepath.c_str())));
@@ -162,15 +162,15 @@ namespace simplewebm
 	}
 
 	// Destructor
-	ImageWalkerImpl::~ImageWalkerImpl()
+	VideoWalkerImpl::~VideoWalkerImpl()
 	{
 		// Do nothing
 	}
 
 	// Walk over video, return true when more video frames are available
-	bool ImageWalkerImpl::walk(
-		const unsigned int count_to_extract,
+	bool VideoWalkerImpl::walk(
 		std::shared_ptr<std::vector<Image> > sp_images,
+		const unsigned int count_to_extract,
 		unsigned int * p_extracted_count)
 	{
 		// Check whether demuxer object has been correctly initialized
@@ -179,7 +179,7 @@ namespace simplewebm
 			// Go over frames
 			unsigned int i = 0;
 			bool frames_left = true;
-			while (frames_left && i < count_to_extract)
+			while (frames_left && (i < count_to_extract || count_to_extract == 0))
 			{
 				// Read next frame
 				if (

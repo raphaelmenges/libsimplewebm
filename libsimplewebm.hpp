@@ -36,28 +36,28 @@ namespace simplewebm
 		std::vector<char> data; // BGR pixels
 	};
 
-	// Image walker to fetch consecutive range of images from video
-	class ImageWalker
+	// Video walker to fetch consecutive range of images from video
+	class VideoWalker
 	{
 	public:
 
 		// Destructor
-		virtual ~ImageWalker() = 0;
+		virtual ~VideoWalker() = 0;
 
-		// Walk over video, return true when more video frames are available. 
+		// Walk over video, return true when more video frames are available. count_to_extract == 0 will walk over complete video.
 		virtual bool walk(
-			const unsigned int count_to_extract,
 			std::shared_ptr<std::vector<Image> > sp_images,
+			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr) = 0;
 
 	protected:
 
 		// Constructor
-		ImageWalker();
-		ImageWalker(const ImageWalker&) = delete;
-		ImageWalker& operator=(ImageWalker const&) = delete;
+		VideoWalker();
+		VideoWalker(const VideoWalker&) = delete;
+		VideoWalker& operator=(VideoWalker const&) = delete;
 	};
 
-	// Factory of image walker
-	std::unique_ptr<ImageWalker> create_image_walker(const std::string webm_filepath, const int thread_count = 1);
+	// Factory of video walker
+	std::unique_ptr<VideoWalker> create_video_walker(const std::string webm_filepath, const int thread_count = 1);
 }
