@@ -190,6 +190,7 @@ namespace simplewebm
 				{
 					// Get image of decoded video frame
 					simplewebm::Image output_image;
+					output_image.time = _up_webm_frame->time;
 					if (_up_vpx_decoder->getImage(_vpx_image) == VPXDecoder::NO_ERROR)
 					{
 						// Get dimensions of the planes

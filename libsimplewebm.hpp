@@ -34,6 +34,7 @@ namespace simplewebm
 		int width = 0;
 		int height = 0;
 		std::vector<char> data; // BGR pixels
+		double time = 0.0;
 	};
 
 	// Video walker to fetch consecutive range of images from video
