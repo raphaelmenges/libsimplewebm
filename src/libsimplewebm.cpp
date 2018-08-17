@@ -107,6 +107,12 @@ namespace simplewebm
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr);
 
+		// Dry walk
+		virtual bool dry_walk(
+			std::shared_ptr<std::vector<double> > sp_times,
+			const unsigned int count_to_extract = 0,
+			unsigned int * p_extracted_count = nullptr);
+
 	private:
 
 		// Members
@@ -249,6 +255,57 @@ namespace simplewebm
 
 					// Move (!) image into output structure
 					sp_images->emplace_back(std::move(output_image));
+
+					// Increase count of extracted frames
+					++i;
+				}
+				else
+				{
+					frames_left = false;
+				}
+			}
+
+			// Provide ouput
+			if (p_extracted_count)
+			{
+				*p_extracted_count = i;
+			}
+			return frames_left;
+		}
+		else
+		{
+			// Provide ouput
+			if (p_extracted_count)
+			{
+				*p_extracted_count = 0;
+			}
+			return false;
+		}
+	}
+
+	// Dry walk
+	bool VideoWalkerImpl::dry_walk(
+		std::shared_ptr<std::vector<double> > sp_times,
+		const unsigned int count_to_extract,
+		unsigned int * p_extracted_count)
+	{
+		// Check whether demuxer object has been correctly initialized
+		if (_up_webm_demuxer)
+		{
+			// Go over frames
+			unsigned int i = 0;
+			bool frames_left = true;
+			while (frames_left && (i < count_to_extract || count_to_extract == 0))
+			{
+				// Read next frame
+				if (
+					_up_webm_demuxer->readFrame(_up_webm_frame.get(), NULL) // get video frame, only
+					&& _up_webm_frame->isValid() // check frame for validity
+					&& _up_vpx_decoder->isOpen() // check whether decoder is still open
+					&& _up_vpx_decoder->decode(*_up_webm_frame.get())) // decode frame
+				{
+					// Emplace time
+					sp_times->emplace_back(std::move(_up_webm_frame->time));
 
 					// Increase count of extracted frames
 					++i;

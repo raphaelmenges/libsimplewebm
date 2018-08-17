@@ -51,6 +51,12 @@ namespace simplewebm
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr) = 0;
 
+		// Dry walk over the video, to gather frame times. count_to_extract == 0 will walk over complete video.
+		virtual bool dry_walk(
+			std::shared_ptr<std::vector<double> > sp_times,
+			const unsigned int count_to_extract = 0,
+			unsigned int * p_extracted_count = nullptr) = 0;
+
 	protected:
 
 		// Constructor
