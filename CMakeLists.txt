@@ -66,9 +66,6 @@ foreach(LIB ${FINAL_LIBRARIES})
 	target_link_libraries(libsimplewebm debug ${LIB})
 endforeach()
 
-target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES} ${FINAL_LIBRARIES})
-target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES} ${FINAL_LIBRARIES})
-
 # Create example
 # add_executable(example example.cpp)
 # target_link_libraries(example libsimplewebm)
