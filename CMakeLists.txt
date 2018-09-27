@@ -55,6 +55,17 @@ set(SOURCES
 add_library(libsimplewebm STATIC ${SOURCES})
 
 # Link libraries into executable
+foreach(LIB ${VPX_RELEASE_LIBRARIES})
+	target_link_libraries(libsimplewebm optimized ${LIB})
+endforeach()
+foreach(LIB ${VPX_DEBUG_LIBRARIES})
+	target_link_libraries(libsimplewebm debug ${LIB})
+endforeach()
+foreach(LIB ${FINAL_LIBRARIES})
+	target_link_libraries(libsimplewebm optimized ${LIB})
+	target_link_libraries(libsimplewebm debug ${LIB})
+endforeach()
+
 target_link_libraries(libsimplewebm optimized ${VPX_RELEASE_LIBRARIES} ${FINAL_LIBRARIES})
 target_link_libraries(libsimplewebm debug ${VPX_DEBUG_LIBRARIES} ${FINAL_LIBRARIES})
 
