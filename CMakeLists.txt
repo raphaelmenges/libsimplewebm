@@ -15,6 +15,9 @@ use_cxx11()
 # Set project name
 project(libsimplewebm)
 
+# Decide where the VPX libraries are placed
+set(SIMPLE_WEBM_USE_LOCAL_VPX ON CACHE BOOL "Link into local builds of VPX library.")
+
 # Final libraries, linked in the end
 set(FINAL_LIBRARIES "")
 
@@ -23,21 +26,31 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 endif()	
 
 # libvpx
-set(VPX_DIR ${CMAKE_CURRENT_LIST_DIR}/libvpx)
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-
-  if(${MSVC_VERSION} STREQUAL 1900) # MSVC2015
-	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmd.lib)
-	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
-  else() # MSVC2017
-	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2017/vpxmd.lib)
-	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
-  endif()
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-	set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx.a)
-	set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx_g.a)
+if(${SIMPLE_WEBM_USE_LOCAL_VPX}) # use local libs
+	set(VPX_DIR ${CMAKE_CURRENT_LIST_DIR}/libvpx)
+	if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+		if(${MSVC_VERSION} STREQUAL 1900) # MSVC2015
+			set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmd.lib)
+			set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
+		else() # MSVC2017
+			set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/MSVC2017/vpxmd.lib)
+			set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/MSVC2015/vpxmdd.lib)
+		endif()
+	elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU) # built on Debian 8.8
+		set(VPX_RELEASE_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx.a)
+		set(VPX_DEBUG_LIBRARIES ${VPX_DIR}/lib/GCC/libvpx_g.a)
+	endif()
+	include_directories(${VPX_DIR}/include)
+else() # use system libs (e.g., from apt-get)
+	find_path(VPX_INCLUDE_DIRS
+		NAMES vpx/vp8.h)
+	find_library(VPX_LIBRARIES
+		NAMES vpx)
+	set(VPX_RELEASE_LIBRARIES ${VPX_LIBRARIES})
+	set(VPX_DEBUG_LIBRARIES ${VPX_LIBRARIES})
+	include_directories(${VPX_INCLUDE_DIRS})
 endif()
-include_directories(${VPX_DIR}/include)
+	
 
 # libwebm
 include_directories(${CMAKE_CURRENT_LIST_DIR}/libwebm)
