@@ -18,6 +18,9 @@ project(libsimplewebm)
 # Decide where the VPX libraries are placed
 set(SIMPLE_WEBM_USE_LOCAL_VPX ON CACHE BOOL "Link into local builds of VPX library.")
 
+# Decide whether to build example or not
+set(SIMPLE_WEBM_BUILD_EXAMPLE ON CACHE BOOL "Small example to show how to use the library.")
+
 # Final libraries, linked in the end
 set(FINAL_LIBRARIES "")
 
@@ -80,5 +83,7 @@ foreach(LIB ${FINAL_LIBRARIES})
 endforeach()
 
 # Create example
-# add_executable(example example.cpp)
-# target_link_libraries(example libsimplewebm)
+if(${SIMPLE_WEBM_BUILD_EXAMPLE})
+	add_executable(example example.cpp)
+	target_link_libraries(example libsimplewebm)
+endif()

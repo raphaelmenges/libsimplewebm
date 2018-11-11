@@ -24,20 +24,27 @@
 *    SOFTWARE.
 */
 
-#include "libsimplewebm.h"
+#include "libsimplewebm.hpp"
 #include "bitmap/bitmap_image.hpp"
 #include <sstream>
-
+#include <memory>
 #include <iostream>
 
 int main()
 {
-	auto frames = simplewebm::extract_frames("C:/recording.webm");
+	// Create walker to walk over video
+	auto walker = simplewebm::create_video_walker("C:/recording.webm");
+	
+	// Fetch images from video
+	auto frames = std::make_shared<std::vector<simplewebm::Image> >();
 
 	// Go over frames and output them as bitmap
 	int frameNumber = 0;
-	for (const auto& frame : *frames.get())
+	while(walker->walk(frames, 1) == simplewebm::Status::OK)
 	{
+		// Get frame
+		const auto& frame = frames->at(0);
+
 		// Initialize output bitmap for the frame
 		bitmap_image output(frame.width, frame.height);
 
@@ -50,12 +57,12 @@ int main()
 				int data_index = (i * frame.width) + j;
 				data_index *= 3;
 
-				// Set pixel in output bitmap
+				// Set pixel in output bitmap (stored as BGR)
 				output.set_pixel(
 					j, i,
-					frame.data.at(data_index),
-					frame.data.at(data_index+1),
-					frame.data.at(data_index+2));
+					frame.data.at(data_index + 2),
+					frame.data.at(data_index + 1),
+					frame.data.at(data_index));
 			}
 		}
 
@@ -64,6 +71,7 @@ int main()
 		s << frameNumber;
 		output.save_image("output_" + s.str() + ".bmp");
 		++frameNumber;
+		frames->clear();
 	}
 
 	return 0;

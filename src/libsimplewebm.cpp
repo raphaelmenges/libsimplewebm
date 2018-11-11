@@ -102,13 +102,13 @@ namespace simplewebm
 		virtual ~VideoWalkerImpl();
 
 		// Walk over video, return true when more video frames are available. 
-		virtual bool walk(
+		virtual Status walk(
 			std::shared_ptr<std::vector<Image> > sp_images,
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr);
 
 		// Dry walk
-		virtual bool dry_walk(
+		virtual Status dry_walk(
 			std::shared_ptr<std::vector<double> > sp_times,
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr);
@@ -174,7 +174,7 @@ namespace simplewebm
 	}
 
 	// Walk over video, return true when more video frames are available
-	bool VideoWalkerImpl::walk(
+	Status VideoWalkerImpl::walk(
 		std::shared_ptr<std::vector<Image> > sp_images,
 		const unsigned int count_to_extract,
 		unsigned int * p_extracted_count)
@@ -210,6 +210,13 @@ namespace simplewebm
 						const int v_height = _vpx_image.getHeight(2);
 						const int v_linesize = _vpx_image.linesize[2];
 
+						// Check, whether dimensions are even
+						if (y_width % 2 != 0 || y_height % 2 != 0)
+						{
+							// TODO: maybe make global state to prohibit further walking
+							return Status::ERR_ODD_DIMENSION;
+						}
+						
 						// Calculate sample of u and v
 						const int u_steps_w = y_width / u_width;
 						const int u_steps_h = y_height / u_height;
@@ -270,7 +277,16 @@ namespace simplewebm
 			{
 				*p_extracted_count = i;
 			}
-			return frames_left;
+
+			// Tell user about frames
+			if (frames_left)
+			{
+				return Status::OK;
+			}
+			else
+			{
+				return Status::DONE;
+			}
 		}
 		else
 		{
@@ -279,12 +295,14 @@ namespace simplewebm
 			{
 				*p_extracted_count = 0;
 			}
-			return false;
+
+			// Educated guess why demuxer could not be initialized
+			return Status::ERR_FILE_NOT_FOUND;
 		}
 	}
 
 	// Dry walk
-	bool VideoWalkerImpl::dry_walk(
+	Status VideoWalkerImpl::dry_walk(
 		std::shared_ptr<std::vector<double> > sp_times,
 		const unsigned int count_to_extract,
 		unsigned int * p_extracted_count)
@@ -321,7 +339,16 @@ namespace simplewebm
 			{
 				*p_extracted_count = i;
 			}
-			return frames_left;
+
+			// Tell user about frames
+			if (frames_left)
+			{
+				return Status::OK;
+			}
+			else
+			{
+				return Status::DONE;
+			}
 		}
 		else
 		{
@@ -330,7 +357,9 @@ namespace simplewebm
 			{
 				*p_extracted_count = 0;
 			}
-			return false;
+
+			// Educated guess why demuxer could not be initialized
+			return Status::ERR_FILE_NOT_FOUND;
 		}
 	}
 }

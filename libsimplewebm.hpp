@@ -29,6 +29,13 @@
 
 namespace simplewebm
 {
+	// Status of walker
+	enum class Status {
+		OK, // everything ok, go on
+		DONE, // walked over complete video, i am done
+		ERR_FILE_NOT_FOUND, // file not found
+		ERR_ODD_DIMENSION }; // width and / or height have odd dimension, cannot proceed
+
 	// Simple image class to hold data of one frame from movie
 	class Image
 	{
@@ -47,14 +54,14 @@ namespace simplewebm
 		// Destructor
 		virtual ~VideoWalker() = 0;
 
-		// Walk over video, return true when more video frames are available. count_to_extract == 0 will walk over complete video.
-		virtual bool walk(
+		// Walk over video, returns status. count_to_extract == 0 will walk over complete video.
+		virtual Status walk(
 			std::shared_ptr<std::vector<Image> > sp_images,
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr) = 0;
 
-		// Dry walk over the video, to gather frame times. count_to_extract == 0 will walk over complete video.
-		virtual bool dry_walk(
+		// Dry walk over the video to gather frame times, returns status. count_to_extract == 0 will walk over complete video.
+		virtual Status dry_walk(
 			std::shared_ptr<std::vector<double> > sp_times,
 			const unsigned int count_to_extract = 0,
 			unsigned int * p_extracted_count = nullptr) = 0;
